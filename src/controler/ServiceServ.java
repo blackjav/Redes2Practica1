@@ -5,12 +5,16 @@
  */
 package controler;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -31,7 +35,9 @@ public class ServiceServ extends Thread{
     private InputStreamReader entradaSocket;
     private Socket socket;
     private FileOutputStream salidaFile;
+    private BufferedOutputStream enviar;
     private FileInputStream entradaFile;
+    private BufferedInputStream flujo;
     private static final int PUERTO = 5000;
     
     public ServiceServ()
@@ -42,38 +48,43 @@ public class ServiceServ extends Thread{
     @Override
     public void run()
     {
-        String texto="test";
+        String tamaño="";
+        String nombre="";
+//        String tamaño="";
        try {
            this.server = new ServerSocket(PUERTO);
            System.out.println("Todo Funcionando...!");
            this.socket = server.accept();
            this.entradaSocket = new InputStreamReader(socket.getInputStream());
            this.salidaText = new PrintWriter(socket.getOutputStream(),true);
-           this.entradaText = new BufferedReader(entradaSocket);
+           this.entradaText = new BufferedReader(entradaSocket); 
+           ObjectInputStream out = new ObjectInputStream(socket.getInputStream());
+           FileOutputStream file = new FileOutputStream("/home/javier/archivomamalon.jpg");
+           byte [] buff ;
+           
+           
            JOptionPane.showMessageDialog(null, "La ip : '"+socket.getInetAddress().getHostName()+"' ha entrado a la session ", "Conexión entrante!!!", JOptionPane.INFORMATION_MESSAGE);
-//           System.err.println("Cliente conectado..." );
            
             while(true)
             {
-                 texto= this.entradaText.readLine();
-                 System.out.println("Entro "+texto);
-                 VentanaServidor.txtAreaText.setText(VentanaServidor.txtAreaText.getText() + "\n" +texto);
-//                 Hay que detectar cuando el cliente se vaya 
+                 tamaño = this.entradaText.readLine();
+                 System.out.println("entro"+tamaño);
+                 buff = new byte[Integer.parseInt(tamaño)];
+                 int len = out.read(buff);
+                 if(len == -1) break;
+                 file.write(buff,0,len);
+                 
             }
         } catch (IOException ex) {
                 Logger.getLogger(ServiceServ.class.getName()).log(Level.SEVERE, null, ex);
            }
         
     }
-    public void enviarMsj(String mensaje)
+   
+       
+    public void enviarFIles( File file , int tamaño,String nombre ) throws FileNotFoundException, IOException
     {
-        try {
-            this.salidaText = new PrintWriter(socket.getOutputStream(),true);
-            System.out.println("Se va a enviar "+ mensaje);
-            salidaText.println(mensaje);
-        } catch (IOException ex) {
-            Logger.getLogger(ServiceServ.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//            
     }
     public void desconectar()
     {
