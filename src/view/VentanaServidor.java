@@ -198,7 +198,7 @@ public class VentanaServidor extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        
+
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jbSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSendActionPerformed
@@ -210,23 +210,16 @@ public class VentanaServidor extends javax.swing.JFrame {
         if (respuesta == JFileChooser.APPROVE_OPTION)
         {
             try {
-                File archivos[]=selector.getSelectedFiles();
-                System.out.println("Cantidad de archivosS "+archivos.length);
-                int i=1;
-                for(File f:archivos)
-                {
-//                    f.getName();
-                    
-                    System.out.println("Nombre del archivo ["+i+"]"+f.getName());
-                    System.out.println("Tamaño del archivo["+i+"]:" +f.length());
-                    service.enviarFIles(f,(int)f.length(),f.getName() );
-                    i++;
-		}
-                
-                
-                
-                jlProgreso.setText("Hola");
-//                service.enviarFIles(archivoElegido,(int)archivoElegido.length() );
+                    File archivos[]=selector.getSelectedFiles();
+                    System.out.println("Cantidad de archivos "+archivos.length);
+                    int i=1;
+                    for(File f:archivos)
+                    {
+                        System.out.println("Nombre del archivo ["+i+"]"+f.getName());
+                        System.out.println("Tamaño del archivo["+i+"]:" +f.length());
+                        service.enviarFIles(f,(int)f.length(),f.getName() );
+                        i++;
+                    }
             } catch (Exception ex) {
                 Logger.getLogger(VentanaServidor.class.getName()).log(Level.SEVERE, null, ex);
             }
