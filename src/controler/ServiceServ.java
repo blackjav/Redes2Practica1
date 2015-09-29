@@ -65,9 +65,7 @@ public class ServiceServ extends Thread{
            
            this.selector = new JFileChooser();
             
-           int len= 0;
-           int i =0;
-           
+           int len= 0;           
            JOptionPane.showMessageDialog(null, "La ip : '"+socket.getInetAddress().getHostName()+"' ha entrado a la session ", "Conexión entrante!!!", JOptionPane.INFORMATION_MESSAGE);
            
             while(true)
@@ -76,6 +74,7 @@ public class ServiceServ extends Thread{
                 System.out.println(tamaño);
                 buffer = new byte[1024];
                 
+                selector.setSelectedFile(new File(tamaño));// aqio va la variable nombre pero no recibe bien los datos
                 int respuesta = selector.showSaveDialog(null);
                 if (respuesta == JFileChooser.APPROVE_OPTION)
                 {
@@ -83,8 +82,7 @@ public class ServiceServ extends Thread{
                     destino=new FileOutputStream(file.getAbsolutePath());
                     while((len=llegada.read(buffer))>0) {
                             destino.write(buffer,0,len);
-                            System.out.println(i);
-                            i++;
+                            
                     }
                 }
                 
