@@ -203,28 +203,7 @@ public class VentanaServidor extends javax.swing.JFrame {
 
     private void jbSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSendActionPerformed
 
-        selector = new JFileChooser();
-        selector.setMultiSelectionEnabled(true);
-        int respuesta = selector.showOpenDialog(this);
         
-        if (respuesta == JFileChooser.APPROVE_OPTION)
-        {
-            try {
-                    File archivos[]=selector.getSelectedFiles();
-                    System.out.println("Cantidad de archivos "+archivos.length);
-                    int i=1;
-                    for(File f:archivos)
-                    {
-                        System.out.println("Nombre del archivo ["+i+"]"+f.getName());
-                        System.out.println("Tamaño del archivo["+i+"]:" +f.length());
-                        service.enviarFIles(f,(int)f.length(),f.getName() );
-                        i++;
-                    }
-            } catch (Exception ex) {
-                Logger.getLogger(VentanaServidor.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        }
     }//GEN-LAST:event_jbSendActionPerformed
 
     private void jbCreateSeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCreateSeActionPerformed
