@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import org.apache.axis.encoding.Base64;
 import view.VentanaServidor;
 
 /**
@@ -54,6 +55,7 @@ public class ServiceServ extends Thread{
         String tamaño="";
         String nombre="";
         String can="";
+        String archivo ="";
        try 
        {
            this.server = new ServerSocket(PUERTO);
@@ -65,40 +67,74 @@ public class ServiceServ extends Thread{
            this.llegada = socket.getInputStream();
            
             
-           int len= 0;           
+           int len= 0;  
+           int cantidad;
            JOptionPane.showMessageDialog(null, "La ip : '"+socket.getInetAddress().getHostName()+"' ha entrado a la session ", "Conexión entrante!!!", JOptionPane.INFORMATION_MESSAGE);
            
-           String entrada =entradaText.readLine();
-           System.out.println(entrada);
-//            while(true)
-//            {
-                
-                tamaño =entradaText.readLine();
-                nombre = entradaText.readLine();
+           
+           buffer = new byte[1024];
+            while(true)
+            {
+//                TODO SI algo falla regresa aqui!!!
+                entradaText.readLine();
+//                System.out.println(entrada);
                 can = entradaText.readLine();
+                cantidad= Integer.parseInt(can);
+                
                 int ax = JOptionPane.showConfirmDialog(null, "El '"+socket.getInetAddress().getHostName()+"' Quiere mandarte "+can+" Archivo(s)\n¿Aceptas?");
                 if(ax == JOptionPane.YES_NO_OPTION)
                 {
-                    System.out.println(tamaño);
-                    this.selector = new JFileChooser();
-                    System.out.println("dosveces"+tamaño);
-                    buffer = new byte[1024];
-
-                    selector.setSelectedFile(new File(nombre));// aqio va la variable nombre pero no recibe bien los datos
-                    int respuesta = selector.showSaveDialog(null);
-                    if (respuesta == JFileChooser.APPROVE_OPTION)
+                    while(cantidad > 0)
                     {
-                        File file = selector.getSelectedFile();
-                        destino=new FileOutputStream(file.getAbsolutePath());
-                        while((len=llegada.read(buffer))>0) {
-                                destino.write(buffer,0,len);
 
-                        }
+                            tamaño =entradaText.readLine();
+                            nombre = entradaText.readLine();
+                            archivo = entradaText.readLine();
+                            buffer = Base64.decode(archivo);
+                            System.out.println(archivo);
+
+                            this.selector = new JFileChooser();
+                            selector.setSelectedFile(new File(nombre));
+                            int respuesta = selector.showSaveDialog(null);
+
+                            if (respuesta == JFileChooser.APPROVE_OPTION)
+                            {
+                                File file = selector.getSelectedFile();
+                                destino=new FileOutputStream(file.getAbsolutePath());
+                                destino.write(buffer);
+
+
+                            }
+                        cantidad --;
                     }
                 }
+                    
+                    
+//                    tamaño =entradaText.readLine();
+//                    nombre = entradaText.readLine();
+//                    int ax = JOptionPane.showConfirmDialog(null, "El '"+socket.getInetAddress().getHostName()+"' Quiere mandarte "+can+" Archivo(s)\n¿Aceptas?");
+//                    if(ax == JOptionPane.YES_NO_OPTION)
+//                    {
+//                        System.out.println(tamaño);
+//                        this.selector = new JFileChooser();
+//                        System.out.println("dosveces"+tamaño);
+//                        buffer = new byte[1024];
+//
+//                        selector.setSelectedFile(new File(nombre));// aqio va la variable nombre pero no recibe bien los datos
+//                        int respuesta = selector.showSaveDialog(null);
+//                        if (respuesta == JFileChooser.APPROVE_OPTION)
+//                        {
+//                            File file = selector.getSelectedFile();
+//                            destino=new FileOutputStream(file.getAbsolutePath());
+//                            while((len=llegada.read(buffer))>0) {
+//                                    destino.write(buffer,0,len);
+//
+//                            }
+//                        }
+//                    }
 //                Implementar el else de respuesta 
-                 
-//            }
+                
+            }
             
             
 //            END TRY
