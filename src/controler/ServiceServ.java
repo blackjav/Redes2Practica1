@@ -52,6 +52,7 @@ public class ServiceServ extends Thread{
     @Override
     public void run()
     {
+//        Se crean archivos que se van a usar 
         String tamaño="";
         String nombre="";
         String can="";
@@ -65,13 +66,15 @@ public class ServiceServ extends Thread{
            this.salidaText = new PrintWriter(socket.getOutputStream(),true);
            this.entradaText = new BufferedReader(entradaSocket); 
            this.llegada = socket.getInputStream();
+//           this.salidaText = new PrintWriter(socket.getOutputStream(),true);
            
-            
+           int i =1;
            int len= 0;  
            int cantidad;
+//           Si se detecta un cliente 
            JOptionPane.showMessageDialog(null, "La ip : '"+socket.getInetAddress().getHostName()+"' ha entrado a la session ", "Conexión entrante!!!", JOptionPane.INFORMATION_MESSAGE);
            
-           
+//           COnstruimos el buffer de entrada y creamos hilo de espera
            buffer = new byte[1024];
             while(true)
             {
@@ -81,59 +84,50 @@ public class ServiceServ extends Thread{
                 can = entradaText.readLine();
                 cantidad= Integer.parseInt(can);
                 
+//                Le decimos al usuario la cantidad de archivos que va a arecibir
                 int ax = JOptionPane.showConfirmDialog(null, "El '"+socket.getInetAddress().getHostName()+"' Quiere mandarte "+can+" Archivo(s)\n¿Aceptas?");
                 if(ax == JOptionPane.YES_NO_OPTION)
                 {
+                    VentanaServidor.jpProgress.setMaximum(cantidad);
+                    VentanaServidor.jpProgress.setMinimum(0);
+                    
                     while(cantidad > 0)
                     {
-
+//                            Lectura del tamañao el nombre y el archivo en tipo String 
                             tamaño =entradaText.readLine();
                             nombre = entradaText.readLine();
                             archivo = entradaText.readLine();
-                            buffer = Base64.decode(archivo);
-                            System.out.println(archivo);
-
-                            this.selector = new JFileChooser();
-                            selector.setSelectedFile(new File(nombre));
-                            int respuesta = selector.showSaveDialog(null);
-
-                            if (respuesta == JFileChooser.APPROVE_OPTION)
+                            int au = JOptionPane.showConfirmDialog(null, "Archivo de entrada  '"+nombre+"' Con un tamaño de "+tamaño+"Kb \n¿Deseas Aceptar?");
+                            if(au == JOptionPane.YES_NO_OPTION)
                             {
-                                File file = selector.getSelectedFile();
-                                destino=new FileOutputStream(file.getAbsolutePath());
-                                destino.write(buffer);
+//                                Decodificamos el string del archivo y lo escribimos en el disdco duro
+                                buffer = Base64.decode(archivo);
+                                System.out.println(archivo);
 
+                                this.selector = new JFileChooser();
+                                selector.setSelectedFile(new File(nombre));
+                                int respuesta = selector.showSaveDialog(null);
 
+                                if (respuesta == JFileChooser.APPROVE_OPTION)
+                                {
+                                    File file = selector.getSelectedFile();
+                                    destino=new FileOutputStream(file.getAbsolutePath());
+                                    destino.write(buffer);
+                                    salidaText.println("*Se ha aceptado el archivo con el nombre de : '" +nombre+" '");
+//                                    salidaText.close();
+                                }
                             }
+                            VentanaServidor.jpProgress.setValue(i);
+//                            else
+//                            {
+//                                salidaText.println("*El host no ha aceptado su archivo : '" +nombre+" '");
+//                                salidaText.close();
+//                            }
+                        i++;
                         cantidad --;
                     }
                 }
                     
-                    
-//                    tamaño =entradaText.readLine();
-//                    nombre = entradaText.readLine();
-//                    int ax = JOptionPane.showConfirmDialog(null, "El '"+socket.getInetAddress().getHostName()+"' Quiere mandarte "+can+" Archivo(s)\n¿Aceptas?");
-//                    if(ax == JOptionPane.YES_NO_OPTION)
-//                    {
-//                        System.out.println(tamaño);
-//                        this.selector = new JFileChooser();
-//                        System.out.println("dosveces"+tamaño);
-//                        buffer = new byte[1024];
-//
-//                        selector.setSelectedFile(new File(nombre));// aqio va la variable nombre pero no recibe bien los datos
-//                        int respuesta = selector.showSaveDialog(null);
-//                        if (respuesta == JFileChooser.APPROVE_OPTION)
-//                        {
-//                            File file = selector.getSelectedFile();
-//                            destino=new FileOutputStream(file.getAbsolutePath());
-//                            while((len=llegada.read(buffer))>0) {
-//                                    destino.write(buffer,0,len);
-//
-//                            }
-//                        }
-//                    }
-//                Implementar el else de respuesta 
-                
             }
             
             
