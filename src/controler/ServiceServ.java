@@ -60,7 +60,8 @@ public class ServiceServ extends Thread{
        try 
        {
            this.server = new ServerSocket(PUERTO);
-           System.out.println("Todo Funcionando...!");
+//           System.out.println("Todo Funcionando...!");
+           JOptionPane.showMessageDialog(null, "Servidor is ready run !!", "alert", JOptionPane.INFORMATION_MESSAGE);
            this.socket = server.accept();
            this.entradaSocket = new InputStreamReader(socket.getInputStream());
            this.salidaText = new PrintWriter(socket.getOutputStream(),true);
@@ -97,7 +98,7 @@ public class ServiceServ extends Thread{
                             tamaño =entradaText.readLine();
                             nombre = entradaText.readLine();
                             archivo = entradaText.readLine();
-                            int au = JOptionPane.showConfirmDialog(null, "Archivo de entrada  '"+nombre+"' Con un tamaño de "+tamaño+"Kb \n¿Deseas Aceptar?");
+                            int au = JOptionPane.showConfirmDialog(null, "Archivo de entrada  '"+nombre+"' Con un tamaño de "+tamaño+"bytes \n¿Deseas Aceptar?");
                             if(au == JOptionPane.YES_NO_OPTION)
                             {
 //                                Decodificamos el string del archivo y lo escribimos en el disdco duro
@@ -117,12 +118,13 @@ public class ServiceServ extends Thread{
 //                                    salidaText.close();
                                 }
                             }
+                            
+                            else
+                            {
+                                salidaText.println("*El host no ha aceptado su archivo : '" +nombre+" '");
+                                    //salidaText.close();
+                            }
                             VentanaServidor.jpProgress.setValue(i);
-//                            else
-//                            {
-//                                salidaText.println("*El host no ha aceptado su archivo : '" +nombre+" '");
-//                                salidaText.close();
-//                            }
                         i++;
                         cantidad --;
                     }
